@@ -1,0 +1,17 @@
+# General
+# -------
+friendly_name_prefix    = "tfe-iac-sample"
+container_registry_name = "tfeAcrSample"
+kubernetes_cluster_name = "tfeK8sSample"
+
+# Provider
+# --------
+location = "East US"
+
+# Tagging
+# -------
+tags = {
+  "Environment" = "Development",
+  "Project"     = "SampleApp"
+  "ProvidedBy"  = "Terraform"
+}
