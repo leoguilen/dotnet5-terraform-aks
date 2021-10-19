@@ -1,0 +1,31 @@
+name: Push in ACR and deploy in aks cluster
+
+on:
+  workflow_run:
+    workflows: ["Terraform Apply"]
+    types:
+      - completed
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+  
+    env:
+      IMAGE_NAME: sample-app
+      IMAGE_TAG: ${{ env.IMAGE_NAME }}:$GITHUB_RUN_NUMBER
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Login in ACR
+      uses: Azure/docker-login@v1
+      with:
+        username: ${{secrets.ARM_CLIENT_ID}}
+        password: ${{secrets.ARM_CLIENT_SECRET}}
+        login-server: ${{ secrets.DOCKER_CONTAINER_REGISTRY }}
+
+    - name: Build and Push in ACR
+      run: |
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ env.IMAGE_TAG }}
+        docker tag ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ env.IMAGE_TAG }} ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+        docker push ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
