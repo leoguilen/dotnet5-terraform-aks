@@ -15,6 +15,9 @@ jobs:
       ARM_CLIENT_SECRET: ${{secrets.ARM_CLIENT_SECRET}}
       ARM_SUBSCRIPTION_ID: ${{secrets.ARM_SUBSCRIPTION_ID}}
       ARM_TENANT_ID: ${{secrets.ARM_TENANT_ID}}
+      TF_VAR_friendly_name_prefix: "tfe-iac-sample"
+      TF_VAR_container_registry_name: "tfeAcrSample"
+      TF_VAR_kubernetes_cluster_name: "tfeK8sSample"
 
     steps:
       - uses: actions/checkout@v2
