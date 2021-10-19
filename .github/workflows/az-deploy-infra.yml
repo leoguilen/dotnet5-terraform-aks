@@ -1,8 +1,10 @@
 name: Terraform Apply
 
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: [".NET CI"]
+    types:
+      - completed
 
 defaults:
   run:
