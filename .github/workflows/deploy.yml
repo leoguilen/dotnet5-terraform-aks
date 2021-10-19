@@ -12,6 +12,8 @@ jobs:
   
     env:
       IMAGE_NAME: sample-app
+      RESOURCE_GROUP_NAME: tfe-iac-sample-rg
+      AKS_CLUSTER_NAME: tfeK8sSample
 
     steps:
     - uses: actions/checkout@v2
@@ -22,13 +24,19 @@ jobs:
         username: ${{ secrets.ARM_CLIENT_ID }}
         password: ${{ secrets.ARM_CLIENT_SECRET }}
         login-server: ${{ secrets.DOCKER_CONTAINER_REGISTRY }}
-
+  
     - name: Build and Push in ACR
       run: |
         docker build . --file Dockerfile --tag ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:$GITHUB_RUN_NUMBER
         docker tag ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:$GITHUB_RUN_NUMBER ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
         docker push ${{ secrets.DOCKER_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
-    
+  
+    - name: Azure Kubernetes set context
+      uses: Azure/aks-set-context@v1
+      with:
+        resource-group: ${{ env.RESOURCE_GROUP_NAME }}
+        cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+  
     - name: Create secret in Kubernetes cluster
       uses: Azure/k8s-create-secret@v1.1
       with:
