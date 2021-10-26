@@ -16,7 +16,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - image: sample-app
+        - image: tfeK8sSample.azurecr.io/sample-app
           imagePullPolicy: IfNotPresent
           name: sample-app
           resources:
